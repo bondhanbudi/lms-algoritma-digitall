@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Bondan Academy – LMS Algoritma Digital Marketing</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/react@18.2.0/umd/react.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@18.2.0/umd/react-dom.production.min.js" crossorigin></script>
+<script src="https://unpkg.com/@babel/standalone@7.23.5/babel.min.js"></script>
+<script src="https://unpkg.com/lucide@0.263.1/dist/umd/lucide.min.js"></script>
+<style>
+  body{font-family:"Segoe UI",system-ui,sans-serif;background:#0b1026}
+  .glass{background:rgba(255,255,255,.07);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12)}
+  .pop{animation:pop .35s ease}@keyframes pop{from{transform:scale(.94);opacity:0}to{transform:scale(1);opacity:1}}
+  .noscroll::-webkit-scrollbar{display:none}
+  @media print{body *{visibility:hidden}#cert,#cert *{visibility:visible}#cert{position:fixed;inset:0;margin:auto;height:fit-content}}
+</style>
+</head>
+<body class="text-slate-100">
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const { useState, useEffect, useRef } = React;
+
+/* ================= DATA MATERI (sumber: modul ajar "Memahami Algoritma Digital Marketing") ================= */
+const M1 = [
+  { id: "m1-a", em: "🧩", t: "Apa itu Algoritma?", p: "Algoritma pada dasarnya adalah urutan atau tahapan dalam penyelesaian masalah. Dalam media sosial, algoritma berperan mengatur arus informasi yang beredar di dalam sistem.", k: ["Urutan/tahapan penyelesaian masalah", "Mengatur arus informasi di media sosial (feed, FYP, rekomendasi)", "Setiap platform punya cara tersendiri dalam mengatur algoritmanya", "Konten sampai ke audiens tergantung cara algoritma platform bekerja"] },
+  { id: "m1-b", em: "🔍", t: "Algoritma Melacak Perilaku & Minat", p: "Algoritma khas platform media sosial umumnya melacak perilaku pengguna. Contoh: orang yang sering mencari istilah jual beli kendaraan akan lebih sering melihat informasi tentang topik tersebut di media sosialnya.", k: ["Pencarian & interaksi pengguna menjadi data", "Konten yang muncul menyesuaikan minat (contoh: jual beli kendaraan)", "Makin sering berinteraksi dengan satu topik, makin banyak topik itu muncul"] },
+  { id: "m1-c", em: "🎯", t: "Mengapa Pemasar Digital Harus Paham?", p: "Pemasar digital harus memahami algoritma di situs media sosial tempat audiens target aktif, dan mengikuti perkembangannya jika ingin menerima umpan balik (feedback) terbesar dari audiens tersebut.", k: ["Kenali platform tempat audiens target aktif", "Ikuti perkembangan algoritma yang terus berubah", "Tujuannya: umpan balik & jangkauan terbesar dari audiens"] }
+];
+const ML0 = { id: "m2-a", em: "🤖", t: "Fungsi Machine Learning & Analytics Intelligence", p: "Machine learning dalam digital marketing membantu stakeholder menganalisis iklan pemasaran, melihat peluang pasar, dan menilai efisiensi pekerjaan. Analytics Intelligence adalah rangkaian fitur yang memanfaatkan machine learning untuk menganalisis pola dalam data; hasilnya jadi dasar pengambilan keputusan.", k: ["Makin banyak data yang dipakai membuat model, hasil makin akurat", "Google memakai data aktivitas pelanggan di website untuk menilai apakah kampanye iklan sudah efektif dan akurat", "Membantu: analisis iklan, peluang pasar, dan efisiensi kerja"] };
+const ML = [
+  { id: "m2-1", em: "🎬", t: "1. Personalisasi Lebih Baik", p: "Machine learning membantu marketer menganalisis customer experience. Netflix merekomendasikan film yang mungkin disukai berdasarkan film yang sudah ditonton. Strategi ini dapat ditiru untuk mempersonalisasi email kampanye, misalnya reminder agar user membeli produk baru atau mengecek katalog.", s: ["Rekomendasi ala Netflix", "Email personalisasi & reminder"] },
+  { id: "m2-2", em: "💬", t: "2. Layanan Customer Service Lebih Cepat", p: "Berdasarkan penelitian, 79% pelanggan lebih menyukai live chat untuk komplain atau bertanya produk karena respons lebih cepat dan jelas. Chatbot memiliki waktu tunggu singkat dan tidak terikat jam operasional. Pertanyaan (query) kompleks dialihkan ke sumber daya manusia bila chatbot kesulitan menjawab.", s: ["79% pelanggan suka live chat", "Chatbot 24 jam", "Eskalasi ke SDM"] },
+  { id: "m2-3", em: "📰", t: "3. Pemilihan Konten Lebih Tepat", p: "Mengumpulkan dan mengidentifikasi konten unggul biasanya memakan waktu lama. Tools berbasis machine learning seperti Curata dan Vestorly mengumpulkan artikel/tulisan dari media sosial, blog, dan platform lain yang sesuai sasaran. Vestorly terbukti meningkatkan efektivitas konten sebanyak 60%.", s: ["Curata", "Vestorly", "Efektivitas konten +60%"] },
+  { id: "m2-4", em: "⚙️", t: "4. Otomatisasi Pemasaran", p: "Pengembangan alat otomatisasi pemasaran membutuhkan dana sekitar 25 miliar dolar. Prediksi terkait: perusahaan yang mengelola otomatisasi pemasaran mengalami kenaikan pendapatan lebih dari 10% setelah 6–9 bulan; 49% bisnis akan memakai alat pemasaran untuk otomatisasi email; 79% perusahaan bermerek terkenal sudah memakainya lebih dari tiga tahun.", s: ["US$25 miliar", "Pendapatan >10% (6–9 bulan)", "49% email otomatis", "79% merek >3 tahun"] },
+  { id: "m2-5", em: "🚀", t: "5. Memudahkan Belajar & Karir Digital Marketing", p: "Digitalisasi adalah transformasi yang banyak dipakai di hampir semua industri. Perusahaan merekrut ahli digital marketing untuk membantu pemasaran lewat media digital. Profesinya menjadi sorotan dan diprediksi menjanjikan, sehingga banyak orang mulai mempelajarinya.", s: ["Rekrutmen ahli digital marketing", "Profesi menjanjikan"] }
+];
+const PL = [
+  { id: "p-fb", em: "📘", n: "Facebook", c: "from-blue-600 to-blue-400", p: ["Menganalisis data pengguna: interaksi sebelumnya, jenis konten yang disukai, dan interaksi dengan akun/halaman serupa", "Konten teman & keluarga diprioritaskan lebih tinggi di feed", "Keterlibatan pelanggan adalah kata kunci: postingan penting bagi pengguna lokal diintensifkan dibanding postingan bisnis", "Konten berbayar diberi peringkat terpisah berdasarkan respons pelanggan dan relevansi", "Manajemen spam: telah menemukan & membuang lebih dari 500 juta akun palsu"], tip: "Buat konten yang memicu interaksi bermakna; iklan berbayar dinilai dari respons dan relevansi." },
+  { id: "p-tw", em: "🐦", n: "Twitter (X)", c: "from-sky-500 to-cyan-300", p: ["Menganalisis interaksi pengguna dengan tweets, hashtag, dan akun", "Faktor: interaksi sebelumnya, akun yang diikuti, dan lokasi geografis", "Pengguna dikelompokkan berdasarkan minat dan kebiasaan dari data interaksi sebelumnya", "Promosi tweet ditargetkan ke audiens spesifik; menyarankan tweet mirip dari akun sendiri atau pengiklan lain"], tip: "Gunakan hashtag & topik relevan agar promosi tweet menyasar kelompok minat yang tepat." },
+  { id: "p-li", em: "💼", n: "LinkedIn", c: "from-sky-700 to-blue-500", p: ["Filter ketat menghalau spam: konten yang dianggap spam/melanggar aturan tidak terlihat publik. Buat materi substansial, hindari pengulangan", "Konten ditayangkan ke audiens terbatas dulu; LinkedIn menilai respons, lalu memperluas atau memfilter ulang", "Postingan terbaik memuat pemikiran/sudut pandang dan pertanyaan yang membangkitkan rasa ingin tahu untuk interaksi"], tip: "Bagikan insight orisinal + pertanyaan pemicu diskusi, bukan promosi berulang." },
+  { id: "p-ig", em: "📸", n: "Instagram", c: "from-pink-500 to-orange-400", p: ["Interest: tema feed mengikuti like, comment, dan save (sering like makanan → postingan makanan muncul)", "Relationship: akun orang terdekat yang sering berinteraksi (misal lewat DM) tampil di bagian atas", "Timeliness: posting saat pengguna aktif, misalnya jam istirahat", "Frequency: seberapa sering pengguna membuka aplikasi memengaruhi urutan feed", "Following: makin banyak akun diikuti, makin banyak postingan terlewat; hapus pengikut tidak aktif", "Usage: lama pemakaian memengaruhi banyaknya konten yang tersedia"], tip: "Posting di jam aktif, pancing like-comment-save, dan bangun interaksi dua arah." },
+  { id: "p-yt", em: "▶️", n: "YouTube", c: "from-red-600 to-rose-400", p: ["Search: menampilkan video dengan relevansi, interaksi, dan kualitas terbaik di bagian atas pencarian", "Trending: video populer per negara, diperbarui setiap 15 menit", "Subscription: konten terbaru channel yang di-subscribe muncul di beranda/notifikasi", "Home & Recommended Videos: rekomendasi berdasarkan riwayat menonton, termasuk ditonton sampai selesai atau tidak"], tip: "Optimalkan kata kunci judul dan buat video yang ditonton sampai habis." },
+  { id: "p-pi", em: "📌", n: "Pinterest", c: "from-red-500 to-pink-400", p: ["Menganalisis interaksi dengan gambar, video, dan infografik", "Faktor: jenis pin yang disukai, board yang disimpan, dan aktivitas pengguna serupa", "Menyarankan pin mirip dari akun sendiri atau pengiklan lain untuk menaikkan tayangan dan interaksi", "Data demografi (lokasi, jenis kelamin, usia) dipakai untuk menilai kinerja promosi pin"], tip: "Buat visual berkualitas, rapikan board, dan targetkan demografi yang tepat." },
+  { id: "p-tt", em: "🎵", n: "TikTok (FYP)", c: "from-fuchsia-600 to-cyan-400", p: ["User interaction: akun diikuti, creator di-hide, komentar, like/share, favorit, not interested, report, video completion rate (durasi tonton sampai akhir), konten akun sendiri, minat dari interaksi dengan konten & iklan organik", "Informasi pada video: captions, sounds, hashtags, effects, dan trending topics", "Pengaturan akun & device: preferensi bahasa, negara, tipe perangkat, dan kategori minat saat mendaftar"], tip: "Buat hook kuat agar ditonton sampai habis, lengkapi caption, hashtag, dan sound." }
+];
+const TOTAL_READ = M1.length + 1 + ML.length + PL.length;
+
+/* ================= DATA GAME: Social Algo Master ================= */
+const SC = [
+  { id: 1, em: "📸", t: "Strategi Instagram", sub: "Toko kuliner lokal", ctx: "Kedai “Dapur Nusantara” punya 800 pengikut tetapi jangkauan organiknya rendah. Kamu adalah social media strategist-nya!", M: ["Reach", "Engagement", "Konversi"],
+    D: [{ q: "Keputusan 1 – Konten apa yang kamu buat? (faktor Interest & Relationship)", o: [
+      { t: "Reels & carousel menu favorit pelanggan, ajak “menu mana favoritmu?” lalu balas semua komentar & DM", pts: 50, fx: [30, 35, 15], why: "Tepat! Konten makanan memicu like, comment, save (Interest), dan membalas DM/komentar memperkuat Relationship sehingga muncul di bagian atas beranda." },
+      { t: "Foto stok umum bertema fashion agar terlihat beda", pts: 0, fx: [-5, -5, 0], why: "Tema tidak sesuai minat audiens kuliner, sehingga sinyal Interest lemah dan tidak ada interaksi." },
+      { t: "Membeli ribuan follower baru", pts: 20, fx: [10, -10, 0], why: "Following besar tanpa interaksi tidak menaikkan Interest/Relationship; akun pasif justru menurunkan potensi algoritma." }] },
+     { q: "Keputusan 2 – Kapan dan seberapa sering kamu posting? (Timeliness, Frequency)", o: [
+      { t: "Posting rutin saat jam istirahat siang & malam ketika pengikut aktif", pts: 50, fx: [30, 20, 25], why: "Tepat! Timeliness: konten baru dilihat banyak orang saat pengguna aktif, dan konsistensi menjaga Frequency." },
+      { t: "Posting jam 2 dini hari saat sepi", pts: 0, fx: [-5, -5, -5], why: "Pengguna tidak aktif sehingga konten baru tidak sempat mendapat interaksi awal." },
+      { t: "Posting 30 konten sekaligus sebulan sekali", pts: 20, fx: [5, 5, 5], why: "Tidak konsisten; Frequency rendah dan waktu tayang tidak tepat." }] }] },
+  { id: 2, em: "🎵", t: "Strategi TikTok FYP", sub: "Produk fashion", ctx: "Brand fashion lokal ingin video pendeknya tembus FYP. Rancang video yang disukai algoritma TikTok!", M: ["Completion Rate", "Views FYP", "Engagement"],
+    D: [{ q: "Keputusan 1 – Bagaimana struktur videonya? (User Interaction: video completion rate)", o: [
+      { t: "Hook 3 detik pertama, durasi singkat & padat agar ditonton sampai akhir", pts: 50, fx: [40, 25, 20], why: "Tepat! Video completion rate (durasi tonton sampai akhir) adalah sinyal interaksi penting untuk FYP." },
+      { t: "Video 3 menit dengan pembukaan panjang", pts: 0, fx: [-10, -5, -5], why: "Penonton melewati video sebelum selesai sehingga completion rate rendah." },
+      { t: "Menyalin video orang lain tanpa perubahan", pts: 20, fx: [5, 5, 0], why: "Tidak ada nilai tambah; sinyal minat penonton lemah." }] },
+     { q: "Keputusan 2 – Informasi apa yang kamu tambahkan? (Informasi pada Video)", o: [
+      { t: "Caption jelas, hashtag relevan (#OOTD #fashionlokal), sound & efek yang sedang trending", pts: 50, fx: [15, 35, 30], why: "Tepat! Captions, sounds, hashtags, effects, dan trending topics membantu algoritma memahami konten." },
+      { t: "Hanya menulis #fyp", pts: 20, fx: [0, 10, 5], why: "Informasi video terlalu umum sehingga algoritma sulit mencocokkan dengan minat tertentu." },
+      { t: "Tanpa caption dan tanpa hashtag", pts: 0, fx: [-5, -10, -5], why: "Algoritma kekurangan informasi video untuk merekomendasikan konten." }] }] },
+  { id: 3, em: "💼", t: "Strategi LinkedIn & B2B", sub: "Postingan edukasi bisnis", ctx: "Konsultan bisnis digital ingin menjangkau pemilik UMKM lewat LinkedIn tanpa terkena filter spam.", M: ["Lolos Filter Spam", "Jangkauan", "Diskusi"],
+    D: [{ q: "Keputusan 1 – Isi postingan apa yang kamu buat?", o: [
+      { t: "Insight orisinal tentang tren UMKM digital dengan sudut pandang pribadi + pertanyaan pemicu diskusi", pts: 50, fx: [40, 25, 35], why: "Tepat! Postingan terbaik memuat pemikiran/sudut pandang dan pertanyaan yang membangkitkan rasa ingin tahu audiens." },
+      { t: "Mengulang postingan promosi yang sama setiap hari", pts: 0, fx: [-20, -10, -10], why: "Pengulangan dan promosi komersial langsung disaring sebagai spam sehingga tidak terlihat publik." },
+      { t: "Brosur penjualan langsung tanpa konteks", pts: 20, fx: [5, 5, 0], why: "Berisiko dinilai pemasaran komersial/spam dan tidak memicu diskusi." }] },
+     { q: "Keputusan 2 – Setelah posting, apa langkahmu? (Audiens terbatas)", o: [
+      { t: "Balas komentar awal dengan cepat agar respons audiens terbatas bagus lalu LinkedIn memperluas jangkauan", pts: 50, fx: [10, 35, 35], why: "Tepat! LinkedIn menguji ke audiens terbatas dulu; respons yang baik membuat konten diperluas." },
+      { t: "Men-tag banyak orang yang tidak relevan", pts: 0, fx: [-10, -5, -5], why: "Mengarah ke perilaku mirip spam dan interaksinya rendah." },
+      { t: "Dibiarkan tanpa interaksi", pts: 20, fx: [0, 5, 0], why: "Tanpa respons, LinkedIn akan memfilter ulang konten tersebut." }] }] },
+  { id: 4, em: "▶️", t: "Strategi YouTube & Pinterest", sub: "Kanal tutorial & dekor", ctx: "Brand dekorasi rumah membuat video tutorial di YouTube dan pin inspirasi di Pinterest.", M: ["Peringkat Search", "Retensi (Recommended)", "Jangkauan Pin"],
+    D: [{ q: "Keputusan 1 – YouTube: apa yang kamu optimalkan? (Search & Recommended)", o: [
+      { t: "Judul & deskripsi berkata kunci yang dicari penonton, video berkualitas dengan alur menahan penonton sampai selesai", pts: 50, fx: [35, 35, 0], why: "Tepat! Search menilai relevansi, interaksi, kualitas; Home & Recommended mempertimbangkan video yang ditonton sampai selesai." },
+      { t: "Judul clickbait tak sesuai isi", pts: 0, fx: [-10, -15, 0], why: "Penonton pergi cepat sehingga retensi dan interaksi turun." },
+      { t: "Mengunggah tanpa judul/deskripsi jelas", pts: 20, fx: [0, 5, 0], why: "Relevansi pencarian rendah." }] },
+     { q: "Keputusan 2 – Pinterest: bagaimana visual & target pin-mu?", o: [
+      { t: "Pin infografik/foto berkualitas, board tertata, promosi pin ditargetkan berdasar demografi (lokasi, gender, usia)", pts: 50, fx: [10, 0, 40], why: "Tepat! Algoritma menganalisis interaksi visual, pin disukai, board disimpan, dan data demografi." },
+      { t: "Foto buram dalam board acak", pts: 0, fx: [0, 0, -10], why: "Interaksi visual rendah dan board tidak relevan." },
+      { t: "Pin bagus tetapi tanpa target audiens", pts: 20, fx: [0, 0, 15], why: "Kualitas baik, namun promosi pin belum memakai data demografi." }] }] },
+  { id: 5, em: "🤖", t: "Optimalisasi Machine Learning", sub: "Konversi penjualan UMKM", ctx: "UMKM camilan online ingin menaikkan konversi dengan bantuan machine learning. Pilih kombinasi terbaik!", M: ["Konversi", "Kecepatan Respons", "Efektivitas Konten"],
+    D: [{ q: "Keputusan 1 – Layanan pelanggan: apa yang kamu pasang?", o: [
+      { t: "Chatbot live chat 24 jam yang mengalihkan pertanyaan kompleks ke staf", pts: 50, fx: [25, 40, 0], why: "Tepat! 79% pelanggan menyukai live chat; chatbot tanpa jam operasional dan eskalasi ke SDM untuk query kompleks." },
+      { t: "Balas manual hanya jam kerja", pts: 20, fx: [0, 5, 0], why: "Waktu tunggu lama membuat pelanggan beralih." },
+      { t: "Matikan kolom chat", pts: 0, fx: [-10, -20, 0], why: "Pelanggan kehilangan kanal bertanya sehingga konversi turun." }] },
+     { q: "Keputusan 2 – Konten & email: strategi apa yang kamu pakai?", o: [
+      { t: "Curata/Vestorly untuk kurasi konten sesuai sasaran + email personalisasi (reminder produk) seperti rekomendasi Netflix", pts: 50, fx: [35, 5, 40], why: "Tepat! Tools ML mempercepat pemilihan konten (Vestorly +60% efektivitas) dan email personalisasi menaikkan konversi." },
+      { t: "Kirim email massal sama ke semua orang", pts: 20, fx: [5, 0, 5], why: "Tanpa personalisasi, relevansi rendah." },
+      { t: "Menyalin konten kompetitor secara manual", pts: 0, fx: [-5, 0, -10], why: "Tidak efisien dan tidak sesuai sasaran audiens." }] }] }
+];
+
+/* ================= DATA KUIS HOTS ================= */
+const QZ = [
+  { q: "Rafi sering mencari “jual beli motor bekas”. Beberapa hari kemudian beranda media sosialnya dipenuhi konten dan iklan motor. Sebagai pemasar digital, kesimpulan paling tepat adalah…", o: ["Platform menampilkan konten secara acak", "Algoritma melacak perilaku & minat pencarian sehingga menampilkan konten serupa; pemasar perlu memahami algoritma platform target", "Semua pengguna pasti melihat konten yang sama", "Algoritma hanya bekerja untuk iklan berbayar", "Pemasar sebaiknya mengabaikan algoritma"], a: 1, e: "Algoritma = urutan penyelesaian masalah yang mengatur arus informasi dan melacak perilaku pengguna. Pemasar perlu memahaminya agar mendapat umpan balik terbesar." },
+  { q: "Toko sepatu online ingin menilai efektivitas kampanye dari aktivitas pelanggan di websitenya dan mengirim email pengingat produk seperti rekomendasi Netflix. Pendekatan tepat?", o: ["Menebak berdasarkan intuisi tim", "Memakai Analytics Intelligence berbasis machine learning (makin banyak data makin akurat) dan email personalisasi berdasarkan perilaku", "Mengirim email sama ke seluruh kontak", "Menghentikan analisis data", "Hanya menambah anggaran iklan"], a: 1, e: "Analytics Intelligence memakai ML untuk menganalisis pola data; personalisasi ala Netflix dapat diterapkan pada email reminder/katalog." },
+  { q: "Tim konten kewalahan mengumpulkan artikel unggulan secara manual, dan pertanyaan pelanggan malam hari lama dijawab. Kombinasi solusi ML yang paling tepat?", o: ["Menambah jam lembur tim tanpa alat", "Curata/Vestorly untuk kurasi konten (Vestorly +60% efektivitas) dan chatbot 24 jam dengan eskalasi ke SDM untuk query kompleks", "Menghapus fitur chat", "Membeli follower", "Menyalin artikel kompetitor"], a: 1, e: "Curata & Vestorly mengumpulkan konten sesuai sasaran; chatbot mempersingkat waktu tunggu tanpa jam operasional dan mengalihkan query kompleks ke manusia (79% pelanggan menyukai live chat)." },
+  { q: "Toko rutin mengunggah promo harian, tetapi jangkauan organik di Facebook rendah sementara foto keluarga teman terus muncul di feed. Penjelasan paling sesuai algoritma Facebook?", o: ["Facebook menghapus semua akun bisnis", "Konten teman/keluarga diprioritaskan; postingan bisnis kalah, sedangkan konten berbayar dirangking terpisah berdasarkan respons & relevansi", "Facebook hanya menampilkan video", "Algoritma tidak menganalisis interaksi", "Jangkauan ditentukan jumlah akun palsu"], a: 1, e: "Algoritma Facebook mengintensifkan postingan penting bagi pengguna lokal dibanding postingan bisnis; konten berbayar diberi peringkat terpisah. Strategi: bangun keterlibatan bermakna." },
+  { q: "Brand kopi ingin promosi tweet menjangkau pencinta kopi di Bandung. Data apa yang dipakai algoritma Twitter (X) untuk penargetan?", o: ["Hanya jumlah huruf tweet", "Interaksi dengan tweets/hashtag/akun, akun yang diikuti, lokasi geografis, dan pengelompokan minat", "Warna profil akun", "Jam tidur pengguna", "Jumlah akun palsu yang dihapus"], a: 1, e: "Twitter menganalisis interaksi, akun yang diikuti, dan lokasi, lalu mengelompokkan pengguna berdasarkan minat dan kebiasaan." },
+  { q: "Konsultan memposting teks promosi yang sama berulang kali di LinkedIn dan jangkauannya nol. Ia lalu mengunggah opini orisinal tentang tren UMKM plus pertanyaan pemicu diskusi. Mengapa strategi baru lebih baik?", o: ["Karena LinkedIn menyukai pengulangan", "Pengulangan disaring sebagai spam; konten substansial berisi sudut pandang & pertanyaan lolos filter dan diuji ke audiens terbatas sebelum diperluas", "LinkedIn hanya menampilkan iklan", "Pertanyaan membuat postingan disembunyikan", "Audiens terbatas berarti postingan gagal"], a: 1, e: "LinkedIn memiliki filter spam, menguji respons pada audiens terbatas, dan menyukai postingan dengan pemikiran serta pertanyaan interaktif." },
+  { q: "Akun kuliner posting pukul 3 pagi padahal pengikutnya aktif saat istirahat siang, dan jarang membalas DM pelanggan. Faktor Instagram yang paling dilanggar dan solusinya?", o: ["Following – hapus seluruh akun", "Timeliness & Relationship – posting saat jam aktif dan aktif berinteraksi (DM/komentar)", "Usage – hapus aplikasi", "Frequency – posting hanya sebulan sekali", "Interest – ganti topik ke fashion"], a: 1, e: "Timeliness berkaitan dengan ketepatan waktu posting saat pengguna aktif, sedangkan Relationship dibangun lewat interaksi seperti DM." },
+  { q: "Kreator ingin videonya muncul di Home & Recommended serta muncul di beranda pelanggan setia. Strategi sesuai algoritma YouTube?", o: ["Judul clickbait agar diklik", "Buat video berkualitas yang ditonton sampai selesai (riwayat tontonan), dorong subscription, dan optimalkan kata kunci untuk Search", "Mengunggah ulang video yang sama setiap 15 menit", "Menonaktifkan komentar", "Hanya mengandalkan Trending"], a: 1, e: "Home & Recommended berdasar riwayat menonton (ditonton hingga selesai); Subscription menampilkan konten channel yang di-subscribe; Search menilai relevansi, interaksi, kualitas." },
+  { q: "Brand dekorasi rumah ingin mempromosikan pin ke perempuan usia 25–34 di Surabaya. Mengapa data demografi dan interaksi visual penting di Pinterest?", o: ["Pinterest hanya membaca teks", "Algoritma menganalisis interaksi gambar/video/infografik (pin disukai, board disimpan) serta demografi (lokasi, gender, usia) untuk menilai kinerja promosi pin", "Demografi tidak dipakai", "Pin harus selalu berisi nomor telepon", "Board tidak berpengaruh"], a: 1, e: "Pinterest menganalisis interaksi visual dan data demografi untuk menentukan konten dan target promosi pin." },
+  { q: "Video skincare hanya mendapat sedikit FYP: penonton melewatinya dalam 2 detik, tanpa caption/hashtag, dan bahasa tidak sesuai target. Langkah perbaikan sesuai 3 faktor FYP TikTok?", o: ["Menambah panjang video menjadi 5 menit", "Hook kuat agar completion rate naik, lengkapi caption, hashtag, sound/efek trending, dan sesuaikan bahasa/negara/kategori minat target", "Menghapus semua hashtag", "Membeli like palsu", "Mengganti perangkat saja"], a: 1, e: "FYP dipengaruhi user interaction (termasuk video completion rate), informasi video (captions, sounds, hashtags, effects, trending topics), serta pengaturan akun & device." }
+];
+const L5 = ["A", "B", "C", "D", "E"];
+
+/* ================= STATE & UTIL ================= */
+const KEY = "bondan_academy_v1";
+const INIT = { nama: "", kelas: "", read: {}, game: {}, quiz: { ans: [], done: false } };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+function useStore() {
+  const [s, setS] = useState(() => { try { return { ...INIT, ...JSON.parse(localStorage.getItem(KEY) || "{}") }; } catch (e) { return INIT; } });
+  useEffect(() => { try { localStorage.setItem(KEY, JSON.stringify(s)); } catch (e) {} }, [s]);
+  return [s, setS];
+}
+const calc = s => {
+  const rd = Object.keys(s.read).length, gameTot = Object.values(s.game).reduce((a, g) => a + (g.score || 0), 0), gameDone = Object.keys(s.game).length;
+  const right = (s.quiz.ans || []).filter((a, i) => a === QZ[i].a).length, quiz = s.quiz.done ? right * 10 : 0;
+  return { rd, pct: Math.round(rd / TOTAL_READ * 100), gameTot, gameDone, right, quiz, lulus: s.quiz.done && quiz >= 70 };
+};
+const BADGES = [
+  { id: "pf", em: "🪪", n: "Profil Lengkap", d: "Isi nama & kelas", ok: (s, c) => !!(s.nama && s.kelas) },
+  { id: "pj", em: "📚", n: "Penjelajah Materi", d: "Baca ≥ 8 kartu materi", ok: (s, c) => c.rd >= 8 },
+  { id: "mm", em: "🧠", n: "Master Materi", d: "Baca seluruh materi", ok: (s, c) => c.rd >= TOTAL_READ },
+  { id: "kv", em: "🔥", n: "Kreator Viral", d: "Selesaikan 5 skenario game", ok: (s, c) => c.gameDone >= 5 },
+  { id: "se", em: "🏆", n: "Skor Emas", d: "Skor game ≥ 400", ok: (s, c) => c.gameTot >= 400 },
+  { id: "am", em: "🎓", n: "Algo Master", d: "Skor kuis ≥ 80", ok: (s, c) => c.quiz >= 80 }
+];
+
+/* ================= KOMPONEN UMUM ================= */
+function Icon({ n, s = 20, c = "" }) {
+  const r = useRef();
+  useEffect(() => { if (r.current && window.lucide) { r.current.innerHTML = `<i data-lucide="${n}"></i>`; window.lucide.createIcons({ attrs: { width: s, height: s } }); } }, [n, s]);
+  return <span ref={r} className={"inline-flex items-center justify-center shrink-0 " + c} style={{ width: s, height: s }} />;
+}
+const Bar = ({ label, val, color = "from-cyan-400 to-indigo-500" }) => (
+  <div className="mb-2"><div className="flex justify-between text-xs mb-1"><span>{label}</span><b>{Math.round(val)}%</b></div>
+    <div className="h-3 rounded-full bg-white/10 overflow-hidden"><div className={"h-full rounded-full bg-gradient-to-r " + color + " transition-all duration-1000 ease-out"} style={{ width: Math.max(2, val) + "%" }} /></div></div>
+);
+function Acc({ it, open, onOpen, children }) {
+  const [o, setO] = useState(false);
+  return (
+    <div className="glass rounded-2xl mb-3 overflow-hidden">
+      <button className="w-full flex items-center gap-3 p-4 text-left" onClick={() => { setO(!o); if (!o) onOpen(it.id); }}>
+        <span className="text-2xl">{it.em}</span><span className="flex-1 font-bold">{it.t}</span>
+        {open && <span className="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full">Dibaca ✓</span>}
+        <Icon n="chevron-down" s={18} c={o ? "rotate-180 transition" : "transition"} />
+      </button>
+      {o && <div className="px-4 pb-4 pop text-sm leading-relaxed">{children}</div>}
+    </div>
+  );
+}
+const Pts = ({ k }) => <ul className="mt-3 space-y-1.5">{k.map((x, i) => <li key={i} className="flex gap-2"><span className="text-amber-400">★</span><span>{x}</span></li>)}</ul>;
+
+/* ================= TAB 1: BERANDA ================= */
+function Home({ s, setS, c, go }) {
+  const set = (k, v) => setS(p => ({ ...p, [k]: v }));
+  return (
+    <div className="space-y-5">
+      <div className="rounded-3xl p-6 bg-gradient-to-br from-indigo-600 via-purple-600 to-cyan-500 shadow-xl">
+        <p className="text-amber-300 font-bold text-sm">🎓 Bondan Academy</p>
+        <h1 className="text-2xl md:text-3xl font-black mt-1">Halo{s.nama ? ", " + s.nama : ", Kreator Digital"}! 👋</h1>
+        <p className="text-white/90 mt-2 text-sm">Pelajari cara kerja algoritma media sosial, mainkan misi konten viral, lalu raih sertifikat kelulusanmu.</p>
+        <div className="flex flex-wrap gap-2 mt-4">{[["materi", "Mulai Belajar", "book-open"], ["game", "Main Game", "gamepad-2"], ["kuis", "Kuis & Sertifikat", "award"]].map(([t, l, i]) => <button key={t} onClick={() => go(t)} className="bg-amber-400 text-indigo-950 font-bold px-4 py-2 rounded-xl flex items-center gap-2 hover:scale-105 transition"><Icon n={i} s={16} />{l}</button>)}</div>
+      </div>
+      <div className="glass rounded-2xl p-5">
+        <h2 className="font-bold mb-3 flex items-center gap-2"><Icon n="user" s={18} />Profil Siswa <span className="text-xs font-normal text-slate-400">(tersimpan otomatis di browser)</span></h2>
+        <div className="grid md:grid-cols-2 gap-3">
+          <input value={s.nama} onChange={e => set("nama", e.target.value)} placeholder="Nama lengkap siswa" className="rounded-xl bg-white/10 border border-white/20 px-4 py-3 outline-none focus:border-cyan-400" />
+          <input value={s.kelas} onChange={e => set("kelas", e.target.value)} placeholder="Kelas (mis. XI BD 1)" className="rounded-xl bg-white/10 border border-white/20 px-4 py-3 outline-none focus:border-cyan-400" />
+        </div>
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        {[["📖", "Materi Terbaca", c.pct + "%", c.rd + "/" + TOTAL_READ + " kartu"], ["🎮", "Skor Game", c.gameTot, "dari 500 • " + c.gameDone + "/5 misi"], ["📝", "Nilai Kuis", s.quiz.done ? c.quiz : "—", "dari 100"], ["🏅", "Lencana", BADGES.filter(b => b.ok(s, c)).length + "/" + BADGES.length, "terkumpul"]].map(([e, l, v, sub]) => (
+          <div key={l} className="glass rounded-2xl p-4 text-center"><div className="text-3xl">{e}</div><div className="text-2xl font-black text-amber-300">{v}</div><div className="text-sm font-semibold">{l}</div><div className="text-xs text-slate-400">{sub}</div></div>))}
+      </div>
+      <div className="glass rounded-2xl p-5">
+        <Bar label="Progres Materi" val={c.pct} /><Bar label="Progres Game" val={c.gameTot / 5} color="from-fuchsia-500 to-amber-400" /><Bar label="Nilai Kuis" val={c.quiz} color="from-emerald-400 to-cyan-400" />
+      </div>
+      <div className="glass rounded-2xl p-5">
+        <h2 className="font-bold mb-3">🏅 Koleksi Lencana</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-3">{BADGES.map(b => { const k = b.ok(s, c); return <div key={b.id} className={"rounded-xl p-3 text-center border " + (k ? "bg-amber-400/15 border-amber-400/60" : "bg-white/5 border-white/10 opacity-50")}><div className={"text-3xl " + (k ? "" : "grayscale")}>{b.em}</div><div className="font-bold text-sm">{b.n}</div><div className="text-xs text-slate-400">{b.d}</div></div>; })}</div>
+      </div>
+      <button onClick={() => { if (confirm("Hapus semua progres & profil?")) { setS(INIT); } }} className="text-xs text-slate-400 underline">Reset semua progres</button>
+    </div>
+  );
+}
+
+/* ================= TAB 2: MATERI ================= */
+function Materi({ s, setS }) {
+  const [m, setM] = useState(1), [pl, setPl] = useState(0);
+  const mark = id => setS(p => ({ ...p, read: { ...p.read, [id]: true } }));
+  const isR = id => !!s.read[id];
+  const P = PL[pl];
+  return (
+    <div>
+      <div className="flex gap-2 mb-4 overflow-x-auto noscroll">{[[1, "Modul 1 · Konsep Dasar"], [2, "Modul 2 · Machine Learning"], [3, "Modul 3 · 7 Platform"]].map(([i, l]) => <button key={i} onClick={() => setM(i)} className={"whitespace-nowrap px-4 py-2 rounded-full font-bold text-sm " + (m === i ? "bg-gradient-to-r from-indigo-500 to-cyan-500" : "glass")}>{l}</button>)}</div>
+      {m === 1 && <div><h2 className="text-xl font-black mb-1">Konsep Dasar Algoritma Digital Marketing</h2><p className="text-sm text-slate-400 mb-3">Buka tiap kartu untuk menandainya sudah dibaca.</p>
+        {M1.map(it => <Acc key={it.id} it={it} open={isR(it.id)} onOpen={mark}><p>{it.p}</p><Pts k={it.k} /></Acc>)}</div>}
+      {m === 2 && <div><h2 className="text-xl font-black mb-3">Peran Machine Learning dalam Digital Marketing</h2>
+        <Acc it={ML0} open={isR(ML0.id)} onOpen={mark}><p>{ML0.p}</p><Pts k={ML0.k} /></Acc>
+        <h3 className="font-bold text-amber-300 my-3">5 Manfaat Utama Machine Learning</h3>
+        {ML.map(it => <Acc key={it.id} it={it} open={isR(it.id)} onOpen={mark}><p>{it.p}</p><div className="flex flex-wrap gap-2 mt-3">{it.s.map(x => <span key={x} className="bg-cyan-500/20 text-cyan-200 px-3 py-1 rounded-full text-xs font-semibold">{x}</span>)}</div></Acc>)}</div>}
+      {m === 3 && <div><h2 className="text-xl font-black mb-3">Cara Kerja Algoritma pada 7 Platform</h2>
+        <div className="flex gap-2 overflow-x-auto noscroll pb-2">{PL.map((p, i) => <button key={p.id} onClick={() => { setPl(i); mark(p.id); }} className={"shrink-0 px-3 py-2 rounded-xl text-sm font-bold flex items-center gap-1 " + (pl === i ? "bg-gradient-to-r " + p.c : "glass")}><span>{p.em}</span>{p.n}{isR(p.id) && <span>✓</span>}</button>)}</div>
+        <div key={P.id} className="pop mt-3 rounded-2xl overflow-hidden glass"><div className={"p-4 bg-gradient-to-r " + P.c}><span className="text-3xl mr-2">{P.em}</span><b className="text-xl">Algoritma {P.n}</b></div>
+          <div className="p-4 text-sm"><Pts k={P.p} /><div className="mt-4 rounded-xl bg-amber-400/15 border border-amber-400/40 p-3">💡 <b>Tips Pemasar:</b> {P.tip}</div></div></div></div>}
+    </div>
+  );
+}
+
+/* ================= TAB 3: GAME ================= */
+function Play({ sc, best, onExit, onDone }) {
+  const [ph, setPh] = useState("intro"), [m, setM] = useState([20, 20, 20]), [pk, setPk] = useState([]), [tot, setTot] = useState(0), [sel, setSel] = useState(null);
+  const d = ph.startsWith("d") ? sc.D[+ph[1] - 1] : null, f = ph.startsWith("f") ? sc.D[+ph[1] - 1] : null;
+  const choose = o => { setSel(o); setM(m.map((v, i) => Math.max(0, Math.min(100, v + o.fx[i])))); setTot(tot + o.pts); setPk([...pk, o]); setPh("f" + ph[1]); };
+  const next = () => { setSel(null); if (ph === "f1") setPh("d2"); else { setPh("end"); onDone(tot); } };
+  const Chart = () => <div className="glass rounded-2xl p-4 my-3"><p className="text-xs text-slate-400 mb-2">📈 Metrik kampanye</p>{sc.M.map((l, i) => <Bar key={l} label={l} val={m[i]} color={["from-cyan-400 to-indigo-500", "from-fuchsia-500 to-pink-400", "from-amber-400 to-orange-500"][i]} />)}</div>;
+  return (
+    <div className="pop">
+      <button onClick={onExit} className="text-sm text-cyan-300 mb-3">← Daftar misi</button>
+      <h2 className="text-xl font-black">{sc.em} Skenario {sc.id}: {sc.t}</h2>
+      {ph === "intro" && <div className="glass rounded-2xl p-5 mt-3"><p>{sc.ctx}</p><Chart /><button onClick={() => setPh("d1")} className="bg-amber-400 text-indigo-950 font-bold px-5 py-3 rounded-xl">Mulai Misi 🚀</button></div>}
+      {d && <div className="mt-3"><Chart /><p className="font-bold my-3">{d.q}</p>{d.o.map((o, i) => <button key={i} onClick={() => choose(o)} className="block w-full text-left glass rounded-xl p-4 mb-2 hover:border-cyan-400 hover:bg-white/10 transition">{o.t}</button>)}</div>}
+      {f && sel && <div className="mt-3"><Chart /><div className={"rounded-2xl p-4 border pop " + (sel.pts === 50 ? "bg-emerald-500/15 border-emerald-400" : sel.pts ? "bg-amber-500/15 border-amber-400" : "bg-rose-500/15 border-rose-400")}><b>{sel.pts === 50 ? "✅ Keputusan terbaik! +50" : sel.pts ? "⚠️ Cukup, namun belum optimal +20" : "❌ Kurang tepat +0"}</b><p className="mt-1 text-sm">{sel.why}</p></div><button onClick={next} className="mt-3 bg-amber-400 text-indigo-950 font-bold px-5 py-3 rounded-xl">{ph === "f1" ? "Keputusan 2 ▶" : "Lihat Hasil ▶"}</button></div>}
+      {ph === "end" && <div className="mt-3"><Chart /><div className="glass rounded-2xl p-5 text-center pop"><div className="text-5xl">{tot >= 100 ? "🏆" : tot >= 40 ? "🥈" : "🌱"}</div><p className="text-2xl font-black text-amber-300">Skor misi: {tot}/100</p><p className="text-sm text-slate-300">{tot >= 100 ? "Sempurna! Kamu menguasai strategi ini." : "Coba ulangi dan pilih keputusan yang selaras dengan konsep algoritma."}</p><div className="flex gap-2 justify-center mt-3"><button onClick={() => { setPh("intro"); setM([20, 20, 20]); setPk([]); setTot(0); setSel(null); }} className="glass px-4 py-2 rounded-xl">🔁 Ulangi</button><button onClick={onExit} className="bg-amber-400 text-indigo-950 font-bold px-4 py-2 rounded-xl">Misi lain</button></div></div></div>}
+    </div>
+  );
+}
+function Game({ s, setS, c }) {
+  const [cur, setCur] = useState(null);
+  if (cur) { const sc = SC.find(x => x.id === cur); return <Play sc={sc} onExit={() => setCur(null)} onDone={t => setS(p => ({ ...p, game: { ...p.game, [cur]: { score: Math.max(t, (p.game[cur] || {}).score || 0) } } }))} />; }
+  return (
+    <div>
+      <div className="rounded-3xl p-5 bg-gradient-to-r from-fuchsia-600 to-indigo-600 mb-4"><h2 className="text-xl font-black">🎮 Social Algo Master: Misi Konten Viral</h2><p className="text-sm text-white/90 mt-1">Selesaikan 5 skenario. Di tiap skenario ambil 2 keputusan strategis dan lihat metrik kampanyemu naik. Skor total: <b className="text-amber-300">{c.gameTot}/500</b></p></div>
+      <div className="grid md:grid-cols-2 gap-3">{SC.map(sc => { const g = s.game[sc.id]; return (
+        <button key={sc.id} onClick={() => setCur(sc.id)} className="glass rounded-2xl p-4 text-left hover:scale-[1.02] transition"><div className="flex items-center gap-3"><span className="text-4xl">{sc.em}</span><div className="flex-1"><div className="font-bold">Skenario {sc.id}: {sc.t}</div><div className="text-xs text-slate-400">{sc.sub}</div></div>{g ? <span className="text-amber-300 font-black">{g.score}/100</span> : <Icon n="arrow-right" s={20} />}</div></button>); })}</div>
+    </div>
+  );
+}
+
+/* ================= TAB 4: KUIS & SERTIFIKAT ================= */
+function buildReport(s, c) {
+  const rows = SC.map(x => `<tr><td>Skenario ${x.id}: ${esc(x.t)}</td><td>${(s.game[x.id] || {}).score ?? "-"}/100</td></tr>`).join("");
+  const qr = QZ.map((q, i) => { const a = s.quiz.ans[i], ok = a === q.a; return `<tr><td>${i + 1}</td><td>${a === undefined ? "-" : L5[a]}</td><td>${L5[q.a]}</td><td style="color:${ok ? "#059669" : "#dc2626"}">${ok ? "Benar" : "Salah"}</td></tr>`; }).join("");
+  const tgl = new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+  return `<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><title>Laporan & Sertifikat - ${esc(s.nama || "Siswa")}</title><style>body{font-family:Segoe UI,Arial,sans-serif;background:#eef2ff;margin:0;padding:24px;color:#1e1b4b}.w{max-width:820px;margin:auto}.cert{background:#fffdf5;border:10px double #f59e0b;padding:32px;text-align:center;border-radius:12px}.cert h1{color:#4338ca;margin:0}.nm{font:italic 700 34px Georgia,serif;border-bottom:2px solid #f59e0b;display:inline-block;min-width:55%;margin:10px 0}.box{background:#fff;border-radius:12px;padding:18px;margin-top:18px}table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid #e5e7eb;padding:8px;text-align:left}.st{display:inline-block;padding:6px 16px;border-radius:20px;font-weight:700;color:#fff;background:${c.lulus ? "#059669" : "#d97706"}}@media print{body{background:#fff}}</style></head><body><div class="w"><div class="cert"><p>🎓 BONDAN ACADEMY</p><h1>SERTIFIKAT KELULUSAN DIGITAL</h1><p>Memahami Algoritma Digital Marketing</p><p>diberikan kepada</p><div class="nm">${esc(s.nama || "Nama Siswa")}</div><p>Kelas ${esc(s.kelas || "-")} · SMK Bisnis Digital</p><p>Skor Game: <b>${c.gameTot}/500</b> · Skor Kuis: <b>${c.quiz}/100</b></p><p><span class="st">${c.lulus ? "LULUS" : "BELUM LULUS (butuh kuis ≥ 70)"}</span></p><p>${tgl}</p></div>
+<div class="box"><h3>Rekap Belajar</h3><p>Materi terbaca: <b>${c.pct}%</b> (${c.rd}/${TOTAL_READ} kartu) · Lencana: ${BADGES.filter(b => b.ok(s, c)).map(b => b.em + " " + b.n).join(", ") || "-"}</p></div>
+<div class="box"><h3>Rekap Nilai Game</h3><table><tr><th>Misi</th><th>Skor</th></tr>${rows}<tr><th>Total</th><th>${c.gameTot}/500</th></tr></table></div>
+<div class="box"><h3>Rekap Kuis (${c.right}/10 benar)</h3><table><tr><th>No</th><th>Jawaban</th><th>Kunci</th><th>Hasil</th></tr>${qr}</table></div></div></body></html>`;
+}
+function Kuis({ s, setS, c }) {
+  const [i, setI] = useState(0), [shown, setShown] = useState(false);
+  const ans = s.quiz.ans || [], q = QZ[i];
+  const setQ = v => setS(p => ({ ...p, quiz: { ...p.quiz, ...v } }));
+  const download = () => { const b = new Blob([buildReport(s, c)], { type: "text/html" }), a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = "Laporan_Sertifikat_Bondan_Academy_" + (s.nama || "Siswa").replace(/\s+/g, "_") + ".html"; document.body.appendChild(a); a.click(); a.remove(); };
+  const Cert = () => (
+    <div className="mt-6 pop">
+      <div id="cert" className="rounded-2xl p-6 text-center bg-amber-50 text-indigo-950 border-8 border-double border-amber-400">
+        <p className="font-bold text-indigo-600">🎓 BONDAN ACADEMY</p><h2 className="text-2xl font-black text-indigo-700">SERTIFIKAT KELULUSAN DIGITAL</h2><p className="text-sm">Memahami Algoritma Digital Marketing</p><p className="mt-3 text-sm">diberikan kepada</p>
+        <p className="text-3xl font-bold italic border-b-2 border-amber-400 inline-block min-w-[60%] my-2" style={{ fontFamily: "Georgia,serif" }}>{s.nama || "Nama Siswa"}</p><p className="text-sm">Kelas {s.kelas || "-"} · SMK Bisnis Digital</p>
+        <div className="flex justify-center gap-6 my-3 text-sm"><div>🎮 Skor Game<br /><b className="text-xl">{c.gameTot}/500</b></div><div>📝 Skor Kuis<br /><b className="text-xl">{c.quiz}/100</b></div></div>
+        <span className={"inline-block px-4 py-1 rounded-full font-bold text-white " + (c.lulus ? "bg-emerald-600" : "bg-amber-600")}>{c.lulus ? "LULUS" : "BELUM LULUS · butuh skor kuis ≥ 70"}</span>
+      </div>
+      {(!s.nama || !s.kelas) && <p className="text-amber-300 text-sm mt-2">⚠️ Lengkapi Nama & Kelas di tab Beranda agar tercetak di sertifikat.</p>}
+      <div className="flex flex-wrap gap-2 mt-4 justify-center"><button onClick={download} className="bg-gradient-to-r from-amber-400 to-orange-400 text-indigo-950 font-black px-5 py-3 rounded-xl flex items-center gap-2"><Icon n="download" s={18} />Download Laporan & Sertifikat Belajar (.html)</button><button onClick={() => window.print()} className="glass px-4 py-3 rounded-xl">🖨️ Cetak</button></div>
+    </div>
+  );
+  if (s.quiz.done) return (
+    <div><div className="rounded-3xl p-5 bg-gradient-to-r from-indigo-600 to-cyan-600 text-center"><div className="text-5xl">{c.quiz >= 80 ? "🏆" : c.quiz >= 70 ? "🎉" : "💪"}</div><h2 className="text-2xl font-black">Nilai Kuis: {c.quiz}/100</h2><p className="text-sm">Benar {c.right} dari 10 soal</p></div>
+      <h3 className="font-bold mt-5 mb-2">Pembahasan</h3>{QZ.map((x, k) => <div key={k} className="glass rounded-xl p-3 mb-2 text-sm"><b>{ans[k] === x.a ? "✅" : "❌"} Soal {k + 1}.</b> Jawabanmu: {ans[k] === undefined ? "-" : L5[ans[k]]} · Kunci: <b>{L5[x.a]}</b><p className="text-slate-300 mt-1">💡 {x.e}</p></div>)}
+      <button onClick={() => setQ({ ans: [], done: false })} className="glass px-4 py-2 rounded-xl mt-2">🔁 Ulangi Kuis</button><Cert /></div>
+  );
+  const pick = j => { if (ans[i] !== undefined) return; const a = [...ans]; a[i] = j; setQ({ ans: a }); setShown(true); };
+  const answered = ans[i] !== undefined;
+  return (
+    <div>
+      <div className="flex justify-between text-sm mb-2"><span>📝 Kuis HOTS · Soal {i + 1}/10</span><span>Terjawab: {ans.filter(x => x !== undefined).length}/10</span></div>
+      <div className="h-2 rounded-full bg-white/10 mb-4"><div className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-amber-400 transition-all" style={{ width: (i + 1) * 10 + "%" }} /></div>
+      <div className="glass rounded-2xl p-5"><p className="font-semibold leading-relaxed">{q.q}</p>
+        <div className="mt-4 space-y-2">{q.o.map((o, j) => { const st = !answered ? "glass hover:bg-white/10" : j === q.a ? "bg-emerald-500/25 border border-emerald-400" : ans[i] === j ? "bg-rose-500/25 border border-rose-400" : "glass opacity-60"; return <button key={j} onClick={() => pick(j)} className={"w-full text-left rounded-xl p-3 flex gap-3 transition " + st}><b className="text-amber-300">{L5[j]}.</b><span>{o}</span></button>; })}</div>
+        {answered && <div className="mt-4 rounded-xl p-3 pop bg-indigo-500/20 border border-indigo-400 text-sm"><b>{ans[i] === q.a ? "✅ Benar!" : "❌ Kurang tepat. Kunci: " + L5[q.a]}</b><p className="mt-1">💡 {q.e}</p></div>}
+      </div>
+      <div className="flex justify-between mt-4"><button disabled={i === 0} onClick={() => setI(i - 1)} className="glass px-4 py-2 rounded-xl disabled:opacity-30">◀ Sebelumnya</button>
+        {i < 9 ? <button disabled={!answered} onClick={() => setI(i + 1)} className="bg-amber-400 text-indigo-950 font-bold px-5 py-2 rounded-xl disabled:opacity-40">Berikutnya ▶</button> : <button disabled={ans.filter(x => x !== undefined).length < 10} onClick={() => setQ({ done: true })} className="bg-emerald-400 text-emerald-950 font-bold px-5 py-2 rounded-xl disabled:opacity-40">Selesai & Lihat Sertifikat ✔</button>}</div>
+    </div>
+  );
+}
+
+/* ================= APLIKASI UTAMA ================= */
+function App() {
+  const [s, setS] = useStore(), [tab, setTab] = useState("beranda"), c = calc(s);
+  const T = [["beranda", "Beranda", "home"], ["materi", "Materi", "book-open"], ["game", "Game", "gamepad-2"], ["kuis", "Kuis & Sertifikat", "award"]];
+  const go = t => { setTab(t); window.scrollTo({ top: 0, behavior: "smooth" }); };
+  return (
+    <div className="min-h-screen pb-24 md:pb-8 bg-gradient-to-b from-indigo-950 via-slate-950 to-slate-950">
+      <header className="sticky top-0 z-20 bg-indigo-950/90 backdrop-blur border-b border-white/10">
+        <div className="max-w-4xl mx-auto px-4 py-3 flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-300 to-orange-500 grid place-items-center text-xl">🎓</div>
+          <div className="flex-1"><div className="font-black leading-none">Bondan Academy</div><div className="text-[11px] text-cyan-300">LMS Bisnis Digital · Algoritma Digital Marketing</div></div>
+          <div className="text-xs bg-amber-400/20 text-amber-300 px-3 py-1 rounded-full font-bold">⭐ {c.gameTot + c.quiz} XP</div>
+        </div>
+        <nav className="max-w-4xl mx-auto px-4 hidden md:flex gap-2 pb-2">{T.map(([k, l, i]) => <button key={k} onClick={() => go(k)} className={"px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 " + (tab === k ? "bg-gradient-to-r from-indigo-500 to-cyan-500" : "hover:bg-white/10")}><Icon n={i} s={16} />{l}</button>)}</nav>
+      </header>
+      <main className="max-w-4xl mx-auto px-4 py-5">
+        {tab === "beranda" && <Home s={s} setS={setS} c={c} go={go} />}
+        {tab === "materi" && <Materi s={s} setS={setS} />}
+        {tab === "game" && <Game s={s} setS={setS} c={c} />}
+        {tab === "kuis" && <Kuis s={s} setS={setS} c={c} />}
+      </main>
+      <nav className="md:hidden fixed bottom-0 inset-x-0 z-20 bg-indigo-950/95 backdrop-blur border-t border-white/10 grid grid-cols-4">{T.map(([k, l, i]) => <button key={k} onClick={() => go(k)} className={"py-2 flex flex-col items-center text-[11px] " + (tab === k ? "text-amber-300" : "text-slate-400")}><Icon n={i} s={22} />{l.split(" ")[0]}</button>)}</nav>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
